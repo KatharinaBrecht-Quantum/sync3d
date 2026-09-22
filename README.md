@@ -1,8 +1,9 @@
-================================================================================
+================================================
 sync3d  |  Quantum Geometric Alignment Engine
---------------------------------------------------------------------------------
-> Hardware-Accelerated Multi-Trace 3D Animations via WebGL Injections
-================================================================================
+------------------------------------------------
+> Hardware-Accelerated Multi-Trace 3D Animations
+> via WebGL Injections
+================================================
 
 
 > **Synchronized 3D Vector and Marker Animations in 'Plotly' via 'WebGL'**
