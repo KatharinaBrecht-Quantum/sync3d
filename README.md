@@ -12,6 +12,8 @@ sync3d  |  Quantum Geometric Alignment Engine
 
 By decoupling the data computing pipeline, it allows researchers and developers to simultaneously animate complex 3D topological frameworks (lines/edges) and dynamic physical states (markers/nodes) without 'UI' degradation or controller loss.
 
+Note: This repository provides a minimal working example for engine testing. High-volume coordinate matrices required for large-scale visualizations are deliberately omitted to minimize package size.
+
 ## Installation
 
 You can install the development version of `sync3d` from GitHub (once repository is live) with:
