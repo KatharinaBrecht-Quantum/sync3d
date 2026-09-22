@@ -1,0 +1,70 @@
+
+---
+title: "Introduction to sync3d: Bypassing 3D Animation Limits"
+author: "Katharina Maria Brecht (ORCID: 0009-0001-2176-7476)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{sync3d: Introduction and Core Architecture}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## The Visual Bottleneck in Native 3D Animations
+
+When visualizing dynamic physical structures—such as time-dependent structural phase transitions in crystallography, changing molecular potentials, or complex network layouts—it is essential to display two layers simultaneously:
+1. **Nodes/Particles:** Moving or changing properties over time.
+2. **Edges/Topological Framework:** Staying connected to those nodes during the animation.
+
+In native `plotly`, animating both layers concurrently forces the CPU to re-render the entire geometric matrix every single frame. This architectural limitation causes the pipeline to lag, stutter, or freeze entirely, making fluid structural animations impossible.
+
+## The Dual-Layer Architecture
+
+`sync3d` introduces a domain-agnostic separation of concerns to achieve fluid 60-FPS animations directly on the GPU:
+
+* **R Environment (CPU Layer):** Exclusively manages the high-efficiency matrix computation of animated particles/nodes (color, size, coordinates) and initializes the core 'plotly' frames.
+* **Pipeline Synchronization:** Passes custom edge indices seamlessly as metadata (`customEdgeIndices`) directly to the widget structure.
+* **WebGL Injected Pipeline (GPU Layer):** Injects a custom JavaScript framework via `htmlwidgets::onRender` directly into the browser. It listens to the `plotly_animated` event and redraws the geometric wireframes instantly via 'WebGL'.
+
+## Target Applications & Fields of Use
+
+This decoupled rendering engine serves critical visual computing needs across multiple scientific domains:
+
+* **Crystallography & Materials Science:** Visualizing lattice defects, atomic displacement vectors, and structural phase transitions within complex crystal frameworks.
+* **Structural Biology & Biochemistry:** Simulating dynamic protein folding pathways, molecular docking interferences, and changing electrostatic potentials on macromolecular surfaces.
+* **Network Analysis & Graph Theory:** Rendering large-scale, interactive 3D network layouts where cluster states change dynamically over time.
+
+## Visual Proof: A Live Comparison
+
+Here is how easily you can implement a synchronized 3D structure using `sync3d`. When you run this code in your browser, notice how the lines track the markers instantly without losing controller responsiveness:
+
+```{r setup, eval = FALSE}
+library(plotly)
+library(sync3d)
+
+# 1. Define spatial coordinates (e.g., a simple geometric diamond framework)
+nodes_df <- data.frame(
+  x = c(0, 1, 0, -1, 0, 0),
+  y = c(0, 0, 1, 0, 0, 0),
+  z = c(1, 0, 0, 0, -1, 0)
+)
+
+# 2. Map the structural connections (from point index to point index)
+edge_matrix = matrix(c(1,2, 1,3, 1,4, 1,6), ncol = 2, byrow = TRUE)
+
+# 3. Build the animated marker base
+base_plot <- plot_ly(data = nodes_df, x = ~x, y = ~y, z = ~z, 
+                     type = 'scatter3d', mode = 'markers')
+
+# 4. Inject the WebGL engine
+final_plot <- add_synchronized_3d_edges(base_plot, edge_matrix)
+```
+
+Now, the rendering workload is pushed entirely to the graphics card, ensuring a butter-smooth user interface experience.
+
