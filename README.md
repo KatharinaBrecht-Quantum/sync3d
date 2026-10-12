@@ -19,14 +19,22 @@ By decoupling the data computing pipeline, it allows researchers and developers 
 
 Note: This repository provides a minimal working example for engine testing. High-volume coordinate matrices required for large-scale visualizations are deliberately omitted to minimize package size.
 
+
 ## Installation
 
-You can install the development version of `sync3d` from GitHub (once repository is live) with:
+You can install the official release of `sync3d` directly from CRAN:
+
+```r
+install.packages("sync3d")
+```
+
+Or install the latest development version from GitHub with:
 
 ```r
 # install.packages("devtools")
 devtools::install_github("KatharinaBrecht-Quantum/sync3d")
 ```
+
 
 ## The Problem: Multi-Trace 3D Animation Limits in R
 When attempting to animate two separate 3D traces (e.g., a static geometric wireframe model and a time-dependent quantum wave field changing colors) using the native R `plotly` structure, the engine loses synchronization across frames. This causes the animation to freeze, line paths to break, or 'UI' control elements (Play/Pause buttons) to completely malfunction.
